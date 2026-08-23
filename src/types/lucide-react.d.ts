@@ -1,0 +1,47 @@
+declare module "lucide-react" {
+  import type { ComponentType, SVGProps } from "react";
+  export type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
+
+  export const ArrowLeft: LucideIcon;
+  export const AlertTriangle: LucideIcon;
+  export const BarChart3: LucideIcon;
+  export const BookOpen: LucideIcon;
+  export const Check: LucideIcon;
+  export const CheckCheck: LucideIcon;
+  export const CheckCircle2: LucideIcon;
+  export const CheckIcon: LucideIcon;
+  export const ChevronDown: LucideIcon;
+  export const ChevronDownIcon: LucideIcon;
+  export const ChevronLeft: LucideIcon;
+  export const ChevronRight: LucideIcon;
+  export const ChevronRightIcon: LucideIcon;
+  export const ChevronUp: LucideIcon;
+  export const ChevronUpIcon: LucideIcon;
+  export const Circle: LucideIcon;
+  export const Clock: LucideIcon;
+  export const Copy: LucideIcon;
+  export const Dot: LucideIcon;
+  export const Ellipsis: LucideIcon;
+  export const Eye: LucideIcon;
+  export const FileQuestion: LucideIcon;
+  export const GraduationCap: LucideIcon;
+  export const History: LucideIcon;
+  export const Home: LucideIcon;
+  export const LayoutDashboard: LucideIcon;
+  export const Loader2: LucideIcon;
+  export const LogOut: LucideIcon;
+  export const Menu: LucideIcon;
+  export const MoreHorizontal: LucideIcon;
+  export const Pencil: LucideIcon;
+  export const Play: LucideIcon;
+  export const Plus: LucideIcon;
+  export const RefreshCw: LucideIcon;
+  export const Search: LucideIcon;
+  export const Settings: LucideIcon;
+  export const Trash2: LucideIcon;
+  export const TrendingUp: LucideIcon;
+  export const Users: LucideIcon;
+  export const X: LucideIcon;
+  export const XCircle: LucideIcon;
+  export const XIcon: LucideIcon;
+}
