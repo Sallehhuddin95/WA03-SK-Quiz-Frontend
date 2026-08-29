@@ -84,11 +84,11 @@ export function QuestionDisplay({
             <FileQuestion className="h-4 w-4" />
             Soalan {index + 1} dari {total}
           </span>
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-muted-foreground">
             {TYPE_LABELS[question.jenis_soalan] ?? question.jenis_soalan}
           </span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
           <div
             className="h-full rounded-full bg-blue-500 transition-all"
             style={{ width: `${((index + 1) / total) * 100}%` }}
@@ -97,8 +97,8 @@ export function QuestionDisplay({
       </div>
 
       {/* Question card */}
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-xl leading-relaxed whitespace-pre-wrap text-gray-900">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+        <p className="text-xl leading-relaxed whitespace-pre-wrap text-foreground">
           {question.teks_soalan}
         </p>
       </div>

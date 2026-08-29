@@ -42,8 +42,18 @@ async function handleResponse<T>(response: Response): Promise<T> {
     return undefined as T;
   }
 
-  const json: ApiEnvelope<T> = await response.json();
-  return json.data;
+  const json = (await response.json()) as ApiEnvelope<T> & {
+    meta?: unknown;
+  };
+
+  // Paginated endpoints return { data, meta }. The envelope must be kept whole
+  // so consumers can read both the item list and the pagination metadata.
+  // Single-resource responses return { data }, which we unwrap as usual.
+  if (json && "meta" in json) {
+    return json as T;
+  }
+
+  return json.data as T;
 }
 
 async function request<T>(

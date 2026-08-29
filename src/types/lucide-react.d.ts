@@ -27,6 +27,7 @@ declare module "lucide-react" {
   export const GraduationCap: LucideIcon;
   export const History: LucideIcon;
   export const Home: LucideIcon;
+  export const KeyRound: LucideIcon;
   export const LayoutDashboard: LucideIcon;
   export const Loader2: LucideIcon;
   export const LogOut: LucideIcon;
@@ -38,8 +39,10 @@ declare module "lucide-react" {
   export const RefreshCw: LucideIcon;
   export const Search: LucideIcon;
   export const Settings: LucideIcon;
+  export const Share2: LucideIcon;
   export const Trash2: LucideIcon;
   export const TrendingUp: LucideIcon;
+  export const UserX: LucideIcon;
   export const Users: LucideIcon;
   export const X: LucideIcon;
   export const XCircle: LucideIcon;

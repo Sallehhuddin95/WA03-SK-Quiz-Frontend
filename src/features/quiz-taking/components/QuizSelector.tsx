@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -24,27 +23,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useSession } from "@/features/auth";
 import { useQuizStart } from "../hooks/useQuizStart";
 import { usePendingAttempt } from "../hooks/usePendingAttempt";
 import { useSubjects, useYears, useTopics } from "@/hooks/useReferenceData";
 import { kuizStartSchema } from "../schemas/kuiz";
 import type { KuizStartValues } from "../schemas/kuiz";
 
-const NAME_STORAGE_KEY = "sk_quiz_nama_murid";
-
 export function QuizSelector() {
   const router = useRouter();
+  const { user } = useSession();
 
   const {
-    register,
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<KuizStartValues>({
     resolver: zodResolver(kuizStartSchema),
     defaultValues: {
-      nama_peserta: "",
       topic_id: 0,
       tahap_kesukaran: undefined,
     },
@@ -58,23 +54,20 @@ export function QuizSelector() {
   const { data: topics, isLoading: topicsLoading } = useTopics(yearId);
 
   const [validatedData, setValidatedData] = useState<KuizStartValues | null>(null);
-  const [showPendingDialog, setShowPendingDialog] = useState(false);
+  const [pendingDialogDismissed, setPendingDialogDismissed] = useState(false);
   const hasProceededRef = useRef(false);
 
   const pendingAttempt = usePendingAttempt(
-    validatedData?.nama_peserta ?? "",
     validatedData?.topic_id ?? 0,
     validatedData?.tahap_kesukaran ?? ""
   );
 
-  const pendingAttemptExists =
-    pendingAttempt.data?.data && pendingAttempt.data.data.length > 0;
+  const pendingAttemptExists = Boolean(pendingAttempt.data?.data?.length);
   const pendingAttemptId = pendingAttempt.data?.data?.[0]?.id;
 
-  useEffect(() => {
-    const savedName = localStorage.getItem(NAME_STORAGE_KEY);
-    if (savedName) setValue("nama_peserta", savedName);
-  }, [setValue]);
+  const participantName = user
+    ? `${user.nama_first} ${user.nama_last}`.trim()
+    : "";
 
   const proceedWithMutation = useCallback(
     (data: KuizStartValues) => {
@@ -85,7 +78,6 @@ export function QuizSelector() {
         {
           topic_id: data.topic_id,
           tahap_kesukaran: data.tahap_kesukaran,
-          nama_peserta: data.nama_peserta.trim(),
         },
         {
           onSuccess: (result) => {
@@ -97,31 +89,41 @@ export function QuizSelector() {
     [startMutation, router]
   );
 
+  // A new validated submission is a fresh start, so allow proceeding again.
   useEffect(() => {
-    if (!validatedData || pendingAttempt.isLoading || hasProceededRef.current) return;
+    hasProceededRef.current = false;
+  }, [validatedData]);
 
-    if (pendingAttemptExists && pendingAttemptId) {
-      setShowPendingDialog(true);
-    } else {
+  useEffect(() => {
+    if (!validatedData || pendingAttempt.isLoading || hasProceededRef.current) {
+      return;
+    }
+    if (!pendingAttemptExists) {
       proceedWithMutation(validatedData);
     }
-  }, [validatedData, pendingAttempt.isLoading, pendingAttemptExists, pendingAttemptId, proceedWithMutation]);
+  }, [validatedData, pendingAttempt.isLoading, pendingAttemptExists, proceedWithMutation]);
+
+  const showPendingDialog =
+    validatedData !== null &&
+    pendingAttemptExists &&
+    !pendingAttempt.isLoading &&
+    !pendingDialogDismissed &&
+    !startMutation.isPending;
 
   function onSubmit(data: KuizStartValues) {
-    localStorage.setItem(NAME_STORAGE_KEY, data.nama_peserta.trim());
-    hasProceededRef.current = false;
+    setPendingDialogDismissed(false);
     setValidatedData(data);
   }
 
   function handleContinueExisting() {
-    setShowPendingDialog(false);
+    setPendingDialogDismissed(true);
     if (pendingAttemptId) {
       router.push(`/murid/kuiz/${pendingAttemptId}`);
     }
   }
 
   function handleStartNew() {
-    setShowPendingDialog(false);
+    setPendingDialogDismissed(true);
     if (validatedData) {
       proceedWithMutation(validatedData);
     }
@@ -132,22 +134,14 @@ export function QuizSelector() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Selamat Datang ke Kuiz Matematik</CardTitle>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             Pilih topik dan tahap untuk memulakan kuiz.
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="nama">Nama Kamu</Label>
-            <Input
-              id="nama"
-              placeholder="Masukkan nama anda"
-              maxLength={50}
-              {...register("nama_peserta")}
-            />
-            {errors.nama_peserta && (
-              <p className="text-sm text-destructive">{errors.nama_peserta.message}</p>
-            )}
+          <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
+            <span className="text-muted-foreground">Nama:</span>
+            <span className="font-medium">{participantName || "-"}</span>
           </div>
 
           <div className="space-y-2">
@@ -161,7 +155,7 @@ export function QuizSelector() {
                   onValueChange={(v) => field.onChange(Number(v))}
                   disabled={topicsLoading}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih topik" />
                   </SelectTrigger>
                   <SelectContent>
@@ -189,7 +183,7 @@ export function QuizSelector() {
                   value={field.value ?? undefined}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih tahap" />
                   </SelectTrigger>
                   <SelectContent>
@@ -227,7 +221,12 @@ export function QuizSelector() {
       </Card>
 
       {/* Pending attempt dialog */}
-      <Dialog open={showPendingDialog} onOpenChange={setShowPendingDialog}>
+      <Dialog
+        open={showPendingDialog}
+        onOpenChange={(open) => {
+          if (!open) setPendingDialogDismissed(true);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Kuiz Belum Diselesaikan</DialogTitle>

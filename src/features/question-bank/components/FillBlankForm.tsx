@@ -37,7 +37,7 @@ export function FillBlankForm() {
         </div>
 
         {fields.length === 0 && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Tambah sekurang-kurangnya satu jawapan yang diterima.
           </p>
         )}

@@ -198,7 +198,7 @@ export function QuestionForm({ mode, questionId }: Readonly<QuestionFormProps>) 
   if (mode === "edit" && questionError) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-gray-500 mb-4">Soalan tidak dijumpai.</p>
+        <p className="text-muted-foreground mb-4">Soalan tidak dijumpai.</p>
         <Button
           type="button"
           variant="outline"

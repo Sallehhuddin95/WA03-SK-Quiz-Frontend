@@ -24,10 +24,10 @@ export function MultipleChoiceAnswer({
           key={letter}
           onClick={() => onChange({ pilihan: letter })}
           className={cn(
-            "flex items-center gap-3 rounded-lg border p-4 text-left transition-colors hover:bg-gray-50",
+            "flex items-center gap-3 rounded-lg border p-4 text-left transition-colors hover:bg-muted",
             answer?.pilihan === letter
               ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500"
-              : "border-gray-200"
+              : "border-border"
           )}
         >
           <span
@@ -35,7 +35,7 @@ export function MultipleChoiceAnswer({
               "flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold",
               answer?.pilihan === letter
                 ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-600"
+                : "bg-muted text-muted-foreground"
             )}
           >
             {letter}

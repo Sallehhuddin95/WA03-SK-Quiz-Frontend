@@ -106,7 +106,7 @@ export function QuestionTable() {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-gray-500 mb-4">
+        <p className="text-muted-foreground mb-4">
           Gagal memuatkan senarai soalan.
         </p>
         <Button type="button" variant="outline" onClick={() => refetch()}>
@@ -132,7 +132,7 @@ export function QuestionTable() {
       {/* Filter row */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Topik</label>
+          <label className="text-xs font-medium text-muted-foreground">Topik</label>
           <Select
             value={topicId === "semua" ? undefined : topicId}
             onValueChange={(v) => {
@@ -155,7 +155,7 @@ export function QuestionTable() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Tahap Kesukaran
           </label>
           <Select
@@ -178,7 +178,7 @@ export function QuestionTable() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Jenis Soalan
           </label>
           <Select
@@ -204,7 +204,7 @@ export function QuestionTable() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Status</label>
+          <label className="text-xs font-medium text-muted-foreground">Status</label>
           <Select
             value={statusFilter === "semua" ? undefined : statusFilter}
             onValueChange={(v) => {
@@ -245,13 +245,13 @@ export function QuestionTable() {
           questionType !== "semua" ||
           statusFilter !== "semua" ? (
             <>
-              <p className="text-gray-500 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Tiada soalan sepadan dengan penapis. Cuba tukar penapis.
               </p>
             </>
           ) : (
             <>
-              <p className="text-gray-500 mb-4">Tiada soalan ditemui.</p>
+              <p className="text-muted-foreground mb-4">Tiada soalan ditemui.</p>
               <Link href="/admin/bank-soalan/baru">
                 <Button type="button">Tambah Soalan Pertama</Button>
               </Link>
@@ -276,7 +276,7 @@ export function QuestionTable() {
               <TableBody>
                 {questionList.map((question, index) => (
                   <TableRow key={question.id}>
-                    <TableCell className="text-gray-500">
+                    <TableCell className="text-muted-foreground">
                       {(page - 1) * 10 + index + 1}
                     </TableCell>
                     <TableCell className="max-w-xs truncate">
@@ -346,7 +346,7 @@ export function QuestionTable() {
 
           {/* Pagination */}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Jumlah: {totalItems} soalan
             </p>
             <div className="flex items-center gap-2">

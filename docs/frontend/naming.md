@@ -51,7 +51,7 @@ Always keep reserved Next.js filenames lowercase and exact:
 - `route.ts`
 - `template.tsx`
 - `default.tsx`
-- `middleware.ts`
+- `proxy.ts`
 
 Use default exports only where Next.js requires them (for example `page.tsx`, `layout.tsx`, `error.tsx`, route handlers in `route.ts`).
 

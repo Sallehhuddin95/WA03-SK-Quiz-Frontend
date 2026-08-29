@@ -4,7 +4,7 @@ export default function AdminLoading() {
   return (
     <div className="flex">
       {/* Sidebar skeleton */}
-      <aside className="hidden w-64 shrink-0 border-r bg-white lg:block">
+      <aside className="hidden w-64 shrink-0 border-r bg-card lg:block">
         <div className="flex h-14 items-center gap-2 border-b px-4">
           <Skeleton className="h-5 w-5 rounded" />
           <Skeleton className="h-5 w-28" />

@@ -26,10 +26,10 @@ export function NavigationPanel({
   const questionIds = Object.keys(answerDraft).map(Number);
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col border-r bg-white">
+    <aside className="flex w-64 shrink-0 flex-col border-r bg-card">
       <div className="border-b px-4 py-4">
-        <p className="text-sm font-semibold text-gray-700">Soalan</p>
-        <p className="mt-0.5 text-xs text-gray-400">
+        <p className="text-sm font-semibold text-muted-foreground">Soalan</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">
           {answeredCount}/{totalQuestions} dijawab
         </p>
       </div>
@@ -54,7 +54,7 @@ export function NavigationPanel({
                     ? "bg-blue-600 text-white shadow-sm"
                     : isAnswered
                       ? "bg-green-100 text-green-700 hover:bg-green-200"
-                      : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                      : "bg-muted text-muted-foreground hover:bg-muted"
                 )}
               >
                 {i + 1}
@@ -74,7 +74,7 @@ export function NavigationPanel({
           Hantar Semua Jawapan
         </Button>
         {answeredCount < totalQuestions && (
-          <p className="mt-2 text-center text-xs text-gray-400">
+          <p className="mt-2 text-center text-xs text-muted-foreground">
             Jawab semua soalan dahulu ({totalQuestions - answeredCount} lagi)
           </p>
         )}

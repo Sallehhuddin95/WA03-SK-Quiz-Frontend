@@ -1,7 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_BASE_URL = process.env.API_URL || "http://localhost:8000/api/v1";
+export const BACKEND_BASE_URL =
+  process.env.API_URL || "http://localhost:8000/api/v1";
 const BFF_TIMEOUT_MS = 30000;
+
+const SESSION_COOKIE_NAME = "sk_quiz_sesi";
+
+function getUpstreamSetCookies(upstream: Response): string[] {
+  if (typeof upstream.headers.getSetCookie === "function") {
+    return upstream.headers.getSetCookie();
+  }
+
+  const value = upstream.headers.get("set-cookie");
+  return value ? [value] : [];
+}
+
+function relaySetCookieHeaders(response: NextResponse, upstream: Response): void {
+  const setCookies = getUpstreamSetCookies(upstream);
+  for (const cookie of setCookies) {
+    response.headers.append("set-cookie", cookie);
+  }
+}
 
 async function forwardRequest(
   request: NextRequest,
@@ -13,6 +32,11 @@ async function forwardRequest(
   const contentType = request.headers.get("content-type");
   if (contentType) {
     headers.set("content-type", contentType);
+  }
+
+  const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
+  if (sessionCookie) {
+    headers.set("cookie", `${SESSION_COOKIE_NAME}=${sessionCookie.value}`);
   }
 
   const hasBody = request.method !== "GET" && request.method !== "HEAD";
@@ -53,10 +77,14 @@ async function forwardRequest(
 
   const upstreamBody = await upstream.text();
 
-  return new NextResponse(upstreamBody, {
+  const response = new NextResponse(upstreamBody, {
     status: upstream.status,
     headers: { "content-type": "application/json" },
   });
+
+  relaySetCookieHeaders(response, upstream);
+
+  return response;
 }
 
 export { forwardRequest };

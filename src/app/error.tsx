@@ -16,10 +16,10 @@ export default function RootError({ error, reset }: ErrorBoundaryProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="mx-auto max-w-md rounded-lg border bg-white p-8 text-center shadow-sm">
+      <div className="mx-auto max-w-md rounded-lg border bg-card p-8 text-center shadow-sm">
         <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-amber-500" />
         <h1 className="mb-2 text-xl font-bold">Ralat Sistem</h1>
-        <p className="mb-6 text-gray-500">
+        <p className="mb-6 text-muted-foreground">
           Maaf, berlaku ralat semasa memuatkan halaman ini.
         </p>
         <Button type="button" onClick={() => reset()}>
