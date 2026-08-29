@@ -46,16 +46,16 @@ export function MatchingAnswer({
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         Padankan setiap item di sebelah kiri dengan jawapan yang betul.
       </p>
       {pasangan.map((item, i) => (
         <div
           key={i}
-          className="flex items-center gap-3 rounded-lg border border-gray-200 p-3"
+          className="flex items-center gap-3 rounded-lg border border-border p-3"
         >
           <span className="min-w-0 flex-1 text-sm font-medium">{item.kiri}</span>
-          <span className="text-sm text-gray-400">&rarr;</span>
+          <span className="text-sm text-muted-foreground">&rarr;</span>
           <Select
             value={currentPasangan[i]?.kanan ?? undefined}
             onValueChange={(v) => { if (v) handleChangePair(i, v); }}

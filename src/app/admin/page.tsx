@@ -99,7 +99,7 @@ export default function AdminDashboardPage() {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-gray-500 mb-4">
+        <p className="text-muted-foreground mb-4">
           Gagal memuatkan statistik. Sila cuba lagi.
         </p>
         <Button type="button" variant="outline" onClick={() => questionRefetch()}>
@@ -114,7 +114,7 @@ export default function AdminDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-gray-500">
+          <p className="text-muted-foreground">
             Selamat datang ke panel pentadbiran SK Quiz.
           </p>
         </div>
@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Jumlah Soalan
             </CardTitle>
             <BookOpen className="h-4 w-4 text-blue-500" />
@@ -145,7 +145,7 @@ export default function AdminDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Soalan Aktif
             </CardTitle>
             <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -161,7 +161,7 @@ export default function AdminDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Jumlah Percubaan
             </CardTitle>
             <Users className="h-4 w-4 text-purple-500" />
@@ -177,7 +177,7 @@ export default function AdminDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Purata Skor
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-orange-500" />

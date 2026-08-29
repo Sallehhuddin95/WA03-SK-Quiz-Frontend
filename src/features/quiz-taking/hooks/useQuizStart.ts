@@ -6,7 +6,6 @@ export function useQuizStart() {
     mutationFn: (data: {
       topic_id: number;
       tahap_kesukaran: string;
-      nama_peserta: string;
     }) => startAttempt(data),
   });
 }

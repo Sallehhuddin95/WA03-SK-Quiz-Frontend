@@ -50,7 +50,7 @@ export function ResultDetail({
               <p className="text-2xl font-bold">
                 {formatScore(detail.skor, detail.jumlah_soalan)}
               </p>
-              <p className="text-lg text-gray-500">
+              <p className="text-lg text-muted-foreground">
                 {formatPercentage(detail.skor, detail.jumlah_soalan)}
               </p>
             </div>
@@ -92,7 +92,7 @@ export function ResultDetail({
             </ScrollArea>
           </div>
         ) : (
-          <p className="text-center text-gray-500">
+          <p className="text-center text-muted-foreground">
             Tiada data perincian.
           </p>
         )}

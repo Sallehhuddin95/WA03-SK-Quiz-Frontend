@@ -37,7 +37,7 @@ export function MatchingForm() {
         </div>
 
         {fields.length < 2 && (
-          <p className="text-sm text-gray-500 mb-2">
+          <p className="text-sm text-muted-foreground mb-2">
             Sekurang-kurangnya 2 pasangan diperlukan.
           </p>
         )}

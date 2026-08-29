@@ -323,7 +323,7 @@ Prefer simple, secure defaults for web authentication. The frontend must treat a
 
 ### Practical Guidance
 
-- Use middleware, route handlers, and Server Components for auth-aware routing and protected content.
+- Use proxy, route handlers, and Server Components for auth-aware routing and protected content.
 - Keep permission logic centralized and consistent across routes and features.
 - Design unauthenticated, unauthorized, expired-session, and forbidden states as explicit user flows.
 

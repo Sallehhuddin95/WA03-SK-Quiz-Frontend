@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
@@ -37,9 +37,13 @@ export function QuizPlayer() {
   const questionList = attempt?.soalan ?? [];
   const currentQuestion = questionList[state.currentQuestionIndex];
 
+  // Captured once at mount; the 24-hour threshold is coarse so a mount-time
+  // timestamp is accurate enough for the stale-quiz warning.
+  const [now] = useState(() => Date.now());
+
   const isOver24Hours =
     attempt?.masa_mula
-      ? new Date(attempt.masa_mula).getTime() < Date.now() - 24 * 60 * 60 * 1000
+      ? new Date(attempt.masa_mula).getTime() < now - 24 * 60 * 60 * 1000
       : false;
 
   // Initialize answerDraft after loading
@@ -120,7 +124,7 @@ export function QuizPlayer() {
   if (isError || !attempt) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-gray-500 mb-4">
+        <p className="text-muted-foreground mb-4">
           {error?.message || "Kuiz tidak dijumpai."}
         </p>
         <Button type="button" variant="outline" onClick={() => refetch()}>
@@ -162,7 +166,7 @@ export function QuizPlayer() {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Quiz header */}
-        <div className="flex items-center gap-4 border-b bg-white px-6 py-3 text-sm text-gray-600">
+        <div className="flex items-center gap-4 border-b bg-card px-6 py-3 text-sm text-muted-foreground">
           <span className="font-medium">
             Kuiz: {attempt.topic_nama} -{" "}
             {attempt.tahap_kesukaran === "mudah"
@@ -171,15 +175,15 @@ export function QuizPlayer() {
                 ? "Sederhana"
                 : "Sukar"}
           </span>
-          <div className="ml-auto flex items-center gap-2 rounded-full border border-gray-200 bg-white py-1 pl-1 pr-3">
+          <div className="ml-auto flex items-center gap-2 rounded-full border border-border bg-card py-1 pl-1 pr-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold text-purple-700">
               {(attempt.nama_peserta[0] || "?").toUpperCase()}
             </span>
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-semibold text-foreground">
                 {attempt.nama_peserta}
               </p>
-              <p className="text-[11px] text-gray-400">Murid</p>
+              <p className="text-[11px] text-muted-foreground">Murid</p>
             </div>
           </div>
         </div>

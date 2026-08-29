@@ -35,7 +35,7 @@ export function AttemptCard({
             <CardTitle className="text-lg">
               {attempt.topic_nama} - {DIFFICULTY_LABELS[attempt.tahap_kesukaran] ?? attempt.tahap_kesukaran}
             </CardTitle>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {date ? formatDate(date) : "-"}
             </p>
           </div>
@@ -55,7 +55,7 @@ export function AttemptCard({
                 {formatPercentage(attempt.skor, attempt.jumlah_soalan)}
               </p>
             ) : (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {attempt.jumlah_soalan} soalan
               </p>
             )}

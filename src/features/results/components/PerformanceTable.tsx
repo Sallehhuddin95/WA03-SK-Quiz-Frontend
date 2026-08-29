@@ -55,7 +55,7 @@ export function PerformanceTable() {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-gray-500 mb-4">
+        <p className="text-muted-foreground mb-4">
           Gagal memuatkan prestasi.
         </p>
         <Button type="button" variant="outline" onClick={() => refetch()}>
@@ -71,7 +71,7 @@ export function PerformanceTable() {
 
       <div className="flex flex-wrap gap-3">
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Topik</label>
+          <label className="text-xs font-medium text-muted-foreground">Topik</label>
           <Select
             value={topicId === "semua" ? undefined : topicId}
             onValueChange={(v) => {
@@ -94,7 +94,7 @@ export function PerformanceTable() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Tahap Kesukaran
           </label>
           <Select
@@ -133,11 +133,11 @@ export function PerformanceTable() {
       ) : attemptList.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           {topicId !== "semua" || difficulty !== "semua" ? (
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               Tiada percubaan sepadan dengan penapis.
             </p>
           ) : (
-            <p className="text-gray-500">Belum ada percubaan kuiz.</p>
+            <p className="text-muted-foreground">Belum ada percubaan kuiz.</p>
           )}
         </div>
       ) : (
@@ -197,7 +197,7 @@ export function PerformanceTable() {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Jumlah: {totalItems} percubaan
             </p>
             <div className="flex items-center gap-2">

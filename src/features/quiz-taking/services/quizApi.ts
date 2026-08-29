@@ -4,7 +4,6 @@ import type { QuizAttempt, QuizResult } from "../types";
 export async function startAttempt(data: {
   topic_id: number;
   tahap_kesukaran: string;
-  nama_peserta: string;
 }): Promise<QuizAttempt> {
   return apiPost<QuizAttempt>("/quiz-attempts", data);
 }
