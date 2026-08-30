@@ -23,7 +23,7 @@ import { useHistoryList } from "../hooks/useHistoryList";
 import { useResultDetail } from "../hooks/useResultDetail";
 import { useSubjects, useYears, useTopics } from "@/hooks/useReferenceData";
 import { ResultDetail } from "./ResultDetail";
-import { formatDate, formatScore, formatPercentage } from "@/utils/format";
+import { formatDate, formatScore, formatPercentage, formatTopicLabel, topicLabel, difficultyLabel } from "@/utils/format";
 
 export function PerformanceTable() {
   const [page, setPage] = useState(1);
@@ -80,13 +80,15 @@ export function PerformanceTable() {
             }}
           >
             <SelectTrigger className="w-48">
-              <SelectValue placeholder="Semua Topik" />
+              <SelectValue placeholder="Semua Topik">
+                {(value: string | null) => topicLabel(value, topics, "Semua Topik")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Topik</SelectItem>
               {topics?.map((t) => (
                 <SelectItem key={t.id} value={t.id.toString()}>
-                  {t.nama}
+                  {formatTopicLabel(t.id, t.nama)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -105,7 +107,9 @@ export function PerformanceTable() {
             }}
           >
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Semua Tahap" />
+              <SelectValue placeholder="Semua Tahap">
+                {(value: string | null) => difficultyLabel(value, "Semua Tahap")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Tahap</SelectItem>

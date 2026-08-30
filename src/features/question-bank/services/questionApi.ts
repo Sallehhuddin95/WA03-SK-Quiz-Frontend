@@ -6,6 +6,7 @@ import {
   apiPut,
 } from "@/lib/api-client";
 import type { PaginatedResponse } from "@/types/api";
+import type { QuestionStatus } from "@/types/question";
 import type { Question, QuestionFilter } from "../types";
 import type { Subject, Year, Topic } from "@/types/reference";
 
@@ -46,6 +47,19 @@ export async function toggleQuestionStatus(
   status: string
 ): Promise<Question> {
   return apiPatch<Question>(`/questions/${id}/status`, { status });
+}
+
+export async function bulkDeleteQuestions(
+  ids: number[]
+): Promise<{ mesej: string }> {
+  return apiPost<{ mesej: string }>("/questions/bulk-delete", { ids });
+}
+
+export async function bulkUpdateQuestionStatus(
+  ids: number[],
+  status: QuestionStatus
+): Promise<{ mesej: string }> {
+  return apiPost<{ mesej: string }>("/questions/bulk-status", { ids, status });
 }
 
 export async function getSubjects(): Promise<Subject[]> {

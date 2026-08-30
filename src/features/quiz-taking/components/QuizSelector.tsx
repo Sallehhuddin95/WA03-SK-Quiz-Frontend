@@ -29,6 +29,7 @@ import { usePendingAttempt } from "../hooks/usePendingAttempt";
 import { useSubjects, useYears, useTopics } from "@/hooks/useReferenceData";
 import { kuizStartSchema } from "../schemas/kuiz";
 import type { KuizStartValues } from "../schemas/kuiz";
+import { formatTopicLabel, topicLabel, difficultyLabel } from "@/utils/format";
 
 export function QuizSelector() {
   const router = useRouter();
@@ -156,12 +157,14 @@ export function QuizSelector() {
                   disabled={topicsLoading}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih topik" />
+                    <SelectValue placeholder="Pilih topik">
+                      {(value: string | null) => topicLabel(value, topics, "Pilih topik")}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {topics?.map((t) => (
                       <SelectItem key={t.id} value={t.id.toString()}>
-                        {t.nama}
+                        {formatTopicLabel(t.id, t.nama)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -184,7 +187,9 @@ export function QuizSelector() {
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih tahap" />
+                    <SelectValue placeholder="Pilih tahap">
+                      {(value: string | null) => difficultyLabel(value, "Pilih tahap")}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="mudah">Mudah</SelectItem>
@@ -207,6 +212,7 @@ export function QuizSelector() {
 
           <Button
             type="button"
+            variant="primary"
             size="lg"
             className="w-full"
             onClick={handleSubmit(onSubmit)}
@@ -243,7 +249,7 @@ export function QuizSelector() {
             >
               Mula Baru
             </Button>
-            <Button type="button" onClick={handleContinueExisting}>
+            <Button type="button" variant="primary" onClick={handleContinueExisting}>
               Sambung
             </Button>
           </DialogFooter>

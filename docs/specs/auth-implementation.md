@@ -112,7 +112,7 @@ Create `src/features/auth/` as the single owner of session behavior: session sta
    - `LoginForm.tsx`: username and kata laluan fields, Zod validation, error display from `useLogin`, BM labels ("Nama Pengguna", "Kata Laluan", "Log Masuk"). On a login response with `mesti_tukar_kata_laluan=true`, switches to `ChangePasswordForm` instead of navigating.
    - `LogoutButton.tsx`: renders user name (`nama_first` + `nama_last`) plus a "Log Keluar" button that calls `useLogout`.
    - `ChangePasswordForm.tsx`: kata laluan semasa and baru fields, BM labels ("Kata Laluan Semasa", "Kata Laluan Baru", "Tukar Kata Laluan"). On success, navigates to the role home (`/admin` for staff, `/murid` for murid).
-   - `StudentViewBanner.tsx`: visible when `useStudentView` reports `aktif`. Shows "Mod Pratonton Murid" and a "Keluar Mod Pratonton" button that calls `keluar`.
+   - `StudentViewBanner.tsx`: visible when `useStudentView` reports `aktif`. Shows "Mod Pratonton Murid" and a "Keluar Mod Pratonton" button. Clicking it sets `aktif=false` and navigates to `/admin`, so the staff member leaves the student view and lands on a stable admin screen. Admin preview creates no attempts, so no pending-attempt state is cleared.
 
 ### Implementation Notes
 
@@ -358,7 +358,7 @@ Let staff preview the student quiz experience without impersonation. The preview
    - Fetches `GET /api/v1/kuiz/pratonton` for the selected topic and difficulty.
    - Renders each question with its options. No answer fields are displayed, no submission UI exists.
 
-2. Entering the page activates the student view mode (`useStudentView.masukkan`); leaving the admin route group deactivates it (`keluar`).
+2. Entering the page activates the student view mode (`useStudentView.masukkan`); leaving the admin route group deactivates it (`keluar`). The visible "Keluar Mod Pratonton" control also deactivates the mode and navigates to `/admin`, so the staff member never stays in the student view on a murid page. Admin preview creates no attempts, so no pending-attempt state is cleared.
 
 3. `StudentViewBanner` renders while the mode is active, with "Mod Pratonton Murid" and the exit control.
 
@@ -370,6 +370,7 @@ Let staff preview the student quiz experience without impersonation. The preview
 
 - The student view mode is sessionStorage-backed so a refresh inside the preview keeps the mode active for the session. It is UI state only and carries no privileges.
 - The backend `GET /kuiz/pratonton` never includes answer fields, so even a buggy client cannot render answers it was not given.
+- The difficulty selector defaults to "Semua Tahap". That value sends no `tahap_kesukaran` query param, and the backend treats an omitted difficulty as a filter across all difficulty levels for the topic (see `specs/api/quiz-attempts.md`).
 
 ### Affected Files
 
@@ -462,5 +463,5 @@ Align the murid quiz flow with the session model: no name input, server-derived 
 - `/` redirects by session role; `/login` handles unauthenticated users; the proxy is a presence check only.
 - The quiz selector has no name input; `usePendingAttempt` sends no name; murid history is own attempts only.
 - `/admin/pengguna` implements the super admin and guru surfaces with scope-aware controls and read-only badges.
-- `/admin/pratonton` renders questions without answers, uses the student view mode, and never enters `/murid/*`.
+- `/admin/pratonton` renders questions without answers, uses the student view mode, never enters `/murid/*`, and its "Keluar Mod Pratonton" control returns to `/admin`.
 - All user-facing strings are Bahasa Malaysia; technical prose in the code follows the naming conventions in `docs/frontend/naming.md`.

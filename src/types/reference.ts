@@ -11,6 +11,6 @@ export interface Year {
 
 export interface Topic {
   id: number;
-  year_id: number;
+  tahun_id: number;
   nama: string;
 }

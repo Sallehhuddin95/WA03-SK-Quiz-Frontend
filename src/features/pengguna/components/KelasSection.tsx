@@ -49,6 +49,7 @@ export function KelasSection({
         {isSuperAdmin && (
           <Button
             type="button"
+            variant="primary"
             onClick={() => setFormState({ mode: "create", kelas: null })}
           >
             <Plus className="mr-2 h-4 w-4" />

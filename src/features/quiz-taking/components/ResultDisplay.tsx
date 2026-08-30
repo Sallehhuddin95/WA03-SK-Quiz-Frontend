@@ -81,7 +81,7 @@ export function ResultDisplay({
         {currentDetail && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Badge variant={currentDetail.adalah_betul ? "default" : "destructive"}>
+              <Badge variant={currentDetail.adalah_betul ? "success" : "destructive"}>
                 {currentDetail.adalah_betul ? "Betul" : "Salah"}
               </Badge>
               <span className="text-sm text-muted-foreground">

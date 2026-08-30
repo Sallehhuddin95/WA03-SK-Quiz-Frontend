@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatTopicLabel, topicLabel, difficultyLabel } from "@/utils/format";
 import {
   Dialog,
   DialogContent,
@@ -243,7 +244,9 @@ export function QuestionForm({ mode, questionId }: Readonly<QuestionFormProps>) 
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih topik" />
+                      <SelectValue placeholder="Pilih topik">
+                        {(value: string | null) => topicLabel(value, topics, "Pilih topik")}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -254,7 +257,7 @@ export function QuestionForm({ mode, questionId }: Readonly<QuestionFormProps>) 
                     ) : (
                       topics?.map((t) => (
                         <SelectItem key={t.id} value={t.id.toString()}>
-                          {t.nama}
+                          {formatTopicLabel(t.id, t.nama)}
                         </SelectItem>
                       ))
                     )}
@@ -278,7 +281,9 @@ export function QuestionForm({ mode, questionId }: Readonly<QuestionFormProps>) 
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih tahap kesukaran" />
+                      <SelectValue placeholder="Pilih tahap kesukaran">
+                        {(value: string | null) => difficultyLabel(value, "Pilih tahap kesukaran")}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -412,7 +417,7 @@ export function QuestionForm({ mode, questionId }: Readonly<QuestionFormProps>) 
 
           {/* Action buttons */}
           <div className="flex gap-3">
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" variant="primary" disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {mode === "cipta" ? "Simpan Soalan" : "Simpan Perubahan"}
             </Button>

@@ -105,7 +105,7 @@ export function ResetPasswordDialog({
             >
               Batal
             </Button>
-            <Button type="submit" disabled={resetMutation.isPending}>
+            <Button type="submit" variant="primary" disabled={resetMutation.isPending}>
               {resetMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}

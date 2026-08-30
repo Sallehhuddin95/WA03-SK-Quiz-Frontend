@@ -140,7 +140,17 @@ export function UserEditDialog({
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Pilih kelas" />
+                        <SelectValue placeholder="Pilih kelas">
+                          {(value: string | null) => {
+                            if (!value) return "Pilih kelas";
+                            const kelas = kelasOptions.find(
+                              (k) => k.id.toString() === value
+                            );
+                            return kelas
+                              ? `Darjah ${kelas.darjah} - ${kelas.nama}`
+                              : value;
+                          }}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {kelasOptions.map((kelas) => (
@@ -179,7 +189,7 @@ export function UserEditDialog({
               >
                 Batal
               </Button>
-              <Button type="submit" disabled={updateMutation.isPending}>
+              <Button type="submit" variant="primary" disabled={updateMutation.isPending}>
                 {updateMutation.isPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}

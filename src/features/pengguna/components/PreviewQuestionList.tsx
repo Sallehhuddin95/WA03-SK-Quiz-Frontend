@@ -13,13 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSubjects, useYears, useTopics } from "@/hooks/useReferenceData";
 import { usePreviewQuestions } from "../hooks/usePreviewQuestions";
-
-const TYPE_LABELS: Record<string, string> = {
-  aneka_pilihan: "Aneka Pilihan",
-  isi_tempat_kosong: "Isi Tempat Kosong",
-  betul_salah: "Betul/Salah",
-  padanan: "Padanan",
-};
+import { formatTopicLabel, formatTypeLabel, topicLabel, difficultyLabel } from "@/utils/format";
 
 export function PreviewQuestionList() {
   const [topicId, setTopicId] = useState(0);
@@ -60,12 +54,14 @@ export function PreviewQuestionList() {
             disabled={topicsLoading}
           >
             <SelectTrigger className="w-56">
-              <SelectValue placeholder="Pilih topik" />
+              <SelectValue placeholder="Pilih topik">
+                {(value: string | null) => topicLabel(value, topics, "Pilih topik")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {topics?.map((topic) => (
                 <SelectItem key={topic.id} value={topic.id.toString()}>
-                  {topic.nama}
+                  {formatTopicLabel(topic.id, topic.nama)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -81,7 +77,9 @@ export function PreviewQuestionList() {
             onValueChange={(v) => setDifficulty(v ?? "semua")}
           >
             <SelectTrigger className="w-44">
-              <SelectValue placeholder="Semua Tahap" />
+              <SelectValue placeholder="Semua Tahap">
+                {(value: string | null) => difficultyLabel(value, "Semua Tahap")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Tahap</SelectItem>
@@ -128,7 +126,7 @@ export function PreviewQuestionList() {
                     Soalan {index + 1}
                   </CardTitle>
                   <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                    {TYPE_LABELS[question.jenis_soalan] ?? question.jenis_soalan}
+                    {formatTypeLabel(question.jenis_soalan)}
                   </span>
                 </div>
               </CardHeader>

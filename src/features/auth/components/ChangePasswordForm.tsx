@@ -85,6 +85,7 @@ export function ChangePasswordForm({ role }: ChangePasswordFormProps) {
 
       <Button
         type="submit"
+        variant="primary"
         size="lg"
         className="w-full"
         disabled={changePasswordMutation.isPending}

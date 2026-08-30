@@ -113,6 +113,7 @@ export function LoginForm({ onNeedPasswordChange }: LoginFormProps) {
 
       <Button
         type="submit"
+        variant="primary"
         size="lg"
         className="w-full"
         disabled={loginMutation.isPending}
