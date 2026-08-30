@@ -129,6 +129,7 @@ export function ShareKelasDialog({
           </Button>
           <Button
             type="button"
+            variant="primary"
             onClick={handleSave}
             disabled={shareMutation.isPending || gurusLoading}
           >

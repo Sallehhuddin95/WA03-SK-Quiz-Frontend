@@ -9,6 +9,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  CheckCircle2,
+  UserX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,27 +30,24 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TableBulkBar } from "@/components/TableBulkBar";
+import { useTableSelection } from "@/hooks/useTableSelection";
 import { useQuestionList } from "../hooks/useQuestionList";
 import { useQuestionStatusToggle } from "../hooks/useQuestionStatusToggle";
 import { useQuestionDelete } from "../hooks/useQuestionDelete";
+import { useQuestionBulkDelete } from "../hooks/useQuestionBulkDelete";
+import { useQuestionBulkStatusToggle } from "../hooks/useQuestionBulkStatusToggle";
 import { useTopics } from "../hooks/useReferenceData";
 import { useSubjects, useYears } from "../hooks/useReferenceData";
 import { DeleteDialog } from "./DeleteDialog";
-import { truncateText } from "@/utils/format";
+import { ToggleStatusDialog } from "./ToggleStatusDialog";
+import { BulkDeleteDialog } from "./BulkDeleteDialog";
+import { BulkStatusDialog } from "./BulkStatusDialog";
+import { formatTopicLabel, formatTypeLabel, DIFFICULTY_LABELS, topicLabel, difficultyLabel } from "@/utils/format";
 import type { QuestionFilter, QuestionType, Difficulty } from "../types";
 
-const TYPE_LABELS: Record<string, string> = {
-  aneka_pilihan: "Aneka Pilihan",
-  isi_tempat_kosong: "Isi Tempat Kosong",
-  betul_salah: "Betul/Salah",
-  padanan: "Padanan",
-};
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  mudah: "Mudah",
-  sederhana: "Sederhana",
-  sukar: "Sukar",
-};
+type BulkAction = "delete" | "aktif" | "tidak_aktif" | null;
 
 export function QuestionTable() {
   const [page, setPage] = useState(1);
@@ -57,6 +56,11 @@ export function QuestionTable() {
   const [questionType, setQuestionType] = useState<string>("semua");
   const [statusFilter, setStatusFilter] = useState<string>("semua");
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [toggleTarget, setToggleTarget] = useState<{
+    id: number;
+    status: string;
+  } | null>(null);
+  const [bulkAction, setBulkAction] = useState<BulkAction>(null);
 
   const { data: subjects } = useSubjects();
   const subjectId = subjects?.[0]?.id ?? null;
@@ -77,16 +81,42 @@ export function QuestionTable() {
   const { data, isLoading, isError, refetch } = useQuestionList(filter);
   const statusToggle = useQuestionStatusToggle();
   const deleteMutation = useQuestionDelete();
+  const bulkDelete = useQuestionBulkDelete();
+  const bulkStatus = useQuestionBulkStatusToggle();
 
   const questionList = data?.data ?? [];
   const totalPages = data?.meta?.total_pages ?? 1;
   const totalItems = data?.meta?.total_items ?? 0;
 
+  const resetKey = `${page}-${topicId}-${difficulty}-${questionType}-${statusFilter}`;
+  const selection = useTableSelection({
+    selectableIds: questionList.map((question) => question.id),
+    resetKey,
+  });
+  const isBulkPending = bulkDelete.isPending || bulkStatus.isPending;
+  const pendingActionId = bulkDelete.isPending
+    ? "delete"
+    : bulkStatus.isPending
+      ? bulkAction === "aktif"
+        ? "aktif"
+        : bulkAction === "tidak_aktif"
+          ? "tidak_aktif"
+          : null
+      : null;
+
   const resetPage = useCallback(() => setPage(1), []);
 
-  function handleToggleStatus(id: number, currentStatus: string) {
-    const newStatus = currentStatus === "aktif" ? "tidak_aktif" : "aktif";
-    statusToggle.mutate({ id, status: newStatus });
+  function handleToggleConfirm() {
+    if (toggleTarget !== null) {
+      const newStatus =
+        toggleTarget.status === "aktif" ? "tidak_aktif" : "aktif";
+      statusToggle.mutate(
+        { id: toggleTarget.id, status: newStatus },
+        {
+          onSettled: () => setToggleTarget(null),
+        }
+      );
+    }
   }
 
   function handleDelete() {
@@ -99,6 +129,44 @@ export function QuestionTable() {
           }
         },
       });
+    }
+  }
+
+  function handleBulkDelete() {
+    const ids = Array.from(selection.selectedIds);
+    if (ids.length === 0) return;
+    bulkDelete.mutate(ids, {
+      onSuccess: () => {
+        selection.clear();
+        setBulkAction(null);
+        if (questionList.length <= ids.length && page > 1) {
+          setPage((p) => p - 1);
+        }
+      },
+    });
+  }
+
+  function handleBulkStatus(status: "aktif" | "tidak_aktif") {
+    const ids = Array.from(selection.selectedIds);
+    if (ids.length === 0) return;
+    bulkStatus.mutate(
+      { ids, status },
+      {
+        onSuccess: () => {
+          selection.clear();
+          setBulkAction(null);
+        },
+      }
+    );
+  }
+
+  function handleBulkAction(actionId: string) {
+    if (actionId === "delete") {
+      setBulkAction("delete");
+    } else if (actionId === "aktif") {
+      setBulkAction("aktif");
+    } else if (actionId === "tidak_aktif") {
+      setBulkAction("tidak_aktif");
     }
   }
 
@@ -122,7 +190,7 @@ export function QuestionTable() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Bank Soalan</h1>
         <Link href="/admin/bank-soalan/baru">
-          <Button type="button">
+          <Button type="button" variant="primary">
             <Plus className="mr-2 h-4 w-4" />
             Tambah Soalan
           </Button>
@@ -141,13 +209,15 @@ export function QuestionTable() {
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Semua Topik" />
+              <SelectValue placeholder="Semua Topik">
+                {(value: string | null) => topicLabel(value, topics, "Semua Topik")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Topik</SelectItem>
               {topics?.map((t) => (
                 <SelectItem key={t.id} value={t.id.toString()}>
-                  {t.nama}
+                  {formatTopicLabel(t.id, t.nama)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -166,7 +236,9 @@ export function QuestionTable() {
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Semua Tahap" />
+              <SelectValue placeholder="Semua Tahap">
+                {(value: string | null) => difficultyLabel(value, "Semua Tahap")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Tahap</SelectItem>
@@ -189,7 +261,9 @@ export function QuestionTable() {
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Semua Jenis" />
+              <SelectValue placeholder="Semua Jenis">
+                {(value: string | null) => (value ? formatTypeLabel(value) : "Semua Jenis")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Jenis</SelectItem>
@@ -213,7 +287,15 @@ export function QuestionTable() {
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Semua Status" />
+              <SelectValue placeholder="Semua Status">
+                {(value: string | null) =>
+                  value === "aktif"
+                    ? "Aktif"
+                    : value === "tidak_aktif"
+                      ? "Tidak Aktif"
+                      : "Semua Status"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="semua">Semua Status</SelectItem>
@@ -253,18 +335,57 @@ export function QuestionTable() {
             <>
               <p className="text-muted-foreground mb-4">Tiada soalan ditemui.</p>
               <Link href="/admin/bank-soalan/baru">
-                <Button type="button">Tambah Soalan Pertama</Button>
+                <Button type="button" variant="primary">
+                  Tambah Soalan Pertama
+                </Button>
               </Link>
             </>
           )}
         </div>
       ) : (
         <>
+          {selection.selectedCount > 0 && (
+            <TableBulkBar
+              selectedCount={selection.selectedCount}
+              actions={[
+                {
+                  id: "delete",
+                  label: "Padam",
+                  variant: "destructive",
+                  icon: <Trash2 className="h-4 w-4" />,
+                },
+                {
+                  id: "aktif",
+                  label: "Aktifkan",
+                  variant: "primary",
+                  icon: <CheckCircle2 className="h-4 w-4" />,
+                },
+                {
+                  id: "tidak_aktif",
+                  label: "Nyahaktifkan",
+                  variant: "destructive",
+                  icon: <UserX className="h-4 w-4" />,
+                },
+              ]}
+              onAction={handleBulkAction}
+              onClear={selection.clear}
+              isPending={isBulkPending}
+              pendingActionId={pendingActionId}
+            />
+          )}
+
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-12">No.</TableHead>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={selection.allSelected}
+                      indeterminate={selection.someSelected && !selection.allSelected}
+                      onCheckedChange={selection.toggleAll}
+                      disabled={questionList.length === 0 || isBulkPending}
+                    />
+                  </TableHead>
                   <TableHead>Teks Soalan</TableHead>
                   <TableHead>Topik</TableHead>
                   <TableHead>Tahap</TableHead>
@@ -274,25 +395,31 @@ export function QuestionTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {questionList.map((question, index) => (
+                {questionList.map((question) => (
                   <TableRow key={question.id}>
-                    <TableCell className="text-muted-foreground">
-                      {(page - 1) * 10 + index + 1}
+                    <TableCell>
+                      <Checkbox
+                        checked={selection.selectedIds.has(question.id)}
+                        onCheckedChange={() => selection.toggleId(question.id)}
+                        disabled={isBulkPending}
+                      />
                     </TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {truncateText(question.teks_soalan)}
+                    <TableCell className="max-w-md">
+                      <span className="line-clamp-2">
+                        {question.teks_soalan}
+                      </span>
                     </TableCell>
                     <TableCell>{question.topic_nama}</TableCell>
                     <TableCell>
                       {DIFFICULTY_LABELS[question.tahap_kesukaran]}
                     </TableCell>
                     <TableCell>
-                      {TYPE_LABELS[question.jenis_soalan]}
+                      {formatTypeLabel(question.jenis_soalan)}
                     </TableCell>
                     <TableCell>
                       <Badge
                         variant={
-                          question.status === "aktif" ? "default" : "secondary"
+                          question.status === "aktif" ? "success" : "destructive"
                         }
                       >
                         {question.status === "aktif" ? "Aktif" : "Tidak Aktif"}
@@ -309,22 +436,24 @@ export function QuestionTable() {
                           type="button"
                           variant="ghost"
                           size="icon"
+                          className="rounded-full text-green-600 hover:text-green-700"
                           title={
                             question.status === "aktif"
                               ? "Nyahaktifkan"
                               : "Aktifkan"
                           }
                           onClick={() =>
-                            handleToggleStatus(question.id, question.status)
+                            setToggleTarget({
+                              id: question.id,
+                              status: question.status,
+                            })
                           }
                           disabled={statusToggle.isPending}
                         >
                           {statusToggle.isPending ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            <span className="text-xs">
-                              {question.status === "aktif" ? "N" : "A"}
-                            </span>
+                            <CheckCircle2 className="h-4 w-4" />
                           )}
                         </Button>
                         <Button
@@ -384,6 +513,40 @@ export function QuestionTable() {
         }}
         onConfirm={handleDelete}
         isPending={deleteMutation.isPending}
+      />
+
+      {/* Status toggle dialog */}
+      <ToggleStatusDialog
+        open={toggleTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setToggleTarget(null);
+        }}
+        onConfirm={handleToggleConfirm}
+        isPending={statusToggle.isPending}
+        isDeactivating={toggleTarget?.status === "aktif"}
+      />
+
+      {/* Bulk delete dialog */}
+      <BulkDeleteDialog
+        open={bulkAction === "delete"}
+        onOpenChange={(open) => {
+          if (!open) setBulkAction(null);
+        }}
+        count={selection.selectedCount}
+        onConfirm={handleBulkDelete}
+        isPending={bulkDelete.isPending}
+      />
+
+      {/* Bulk status dialog */}
+      <BulkStatusDialog
+        open={bulkAction === "aktif" || bulkAction === "tidak_aktif"}
+        onOpenChange={(open) => {
+          if (!open) setBulkAction(null);
+        }}
+        count={selection.selectedCount}
+        isActivating={bulkAction === "aktif"}
+        onConfirm={() => handleBulkStatus(bulkAction === "aktif" ? "aktif" : "tidak_aktif")}
+        isPending={bulkStatus.isPending}
       />
     </div>
   );

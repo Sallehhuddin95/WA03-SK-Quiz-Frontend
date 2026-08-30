@@ -56,7 +56,7 @@ export function SubmitDialog({
             <Button type="button" variant="outline" onClick={() => handleOpen(false)}>
               Kembali
             </Button>
-            <Button type="button" onClick={() => setStep("confirm")}>
+            <Button type="button" variant="primary" onClick={() => setStep("confirm")}>
               Hantar Juga
             </Button>
           </DialogFooter>
@@ -79,7 +79,7 @@ export function SubmitDialog({
           <Button type="button" variant="outline" onClick={() => handleOpen(false)}>
             Batal
           </Button>
-          <Button type="button" onClick={onSubmit} disabled={isPending}>
+          <Button type="button" variant="primary" onClick={onSubmit} disabled={isPending}>
             Ya, Hantar
           </Button>
         </DialogFooter>

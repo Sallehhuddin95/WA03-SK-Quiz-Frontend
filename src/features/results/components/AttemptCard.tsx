@@ -68,7 +68,7 @@ export function AttemptCard({
               </Button>
             )}
             {!isCompleted && onContinue && (
-              <Button type="button" size="sm" onClick={onContinue}>
+              <Button type="button" variant="primary" size="sm" onClick={onContinue}>
                 <Play className="mr-1 h-4 w-4" />
                 Sambung
               </Button>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
@@ -55,6 +55,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -167,7 +168,7 @@ export default function AdminLayout({
           </div>
         </header>
 
-        <StudentViewBanner />
+        <StudentViewBanner onExit={() => router.push("/admin")} />
 
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
       </div>

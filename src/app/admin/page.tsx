@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Users, CheckCircle2, TrendingUp, Plus, BarChart3 } from "lucide-react";
+import { BookOpen, Users, CheckCircle2, TrendingUp, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -118,12 +118,6 @@ export default function AdminDashboardPage() {
             Selamat datang ke panel pentadbiran SK Quiz.
           </p>
         </div>
-        <Link href="/admin/bank-soalan/baru">
-          <Button type="button">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Soalan Baru
-          </Button>
-        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

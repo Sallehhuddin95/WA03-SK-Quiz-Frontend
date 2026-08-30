@@ -60,7 +60,7 @@ function SelectContent({
   className,
   children,
   side = "bottom",
-  sideOffset = 4,
+  sideOffset = 0,
   align = "center",
   alignOffset = 0,
   alignItemWithTrigger = true,

@@ -45,7 +45,7 @@ export function GuruSection() {
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Pengurusan Guru</h2>
-        <Button type="button" onClick={() => setCreateOpen(true)}>
+        <Button type="button" variant="primary" onClick={() => setCreateOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Tambah Guru
         </Button>

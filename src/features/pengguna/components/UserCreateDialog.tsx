@@ -117,7 +117,13 @@ export function UserCreateDialog({
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Pilih peranan" />
+                      <SelectValue placeholder="Pilih peranan">
+                        {(value: string | null) =>
+                          value
+                            ? ROLE_OPTIONS.find((r) => r.value === value)?.label ?? value
+                            : "Pilih peranan"
+                        }
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {ROLE_OPTIONS.map((option) => (
@@ -206,7 +212,17 @@ export function UserCreateDialog({
                     onValueChange={field.onChange}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Pilih kelas" />
+                      <SelectValue placeholder="Pilih kelas">
+                        {(value: string | null) => {
+                          if (!value) return "Pilih kelas";
+                          const kelas = kelasOptions.find(
+                            (k) => k.id.toString() === value
+                          );
+                          return kelas
+                            ? `Darjah ${kelas.darjah} - ${kelas.nama}`
+                            : value;
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {kelasOptions.map((kelas) => (
@@ -244,7 +260,7 @@ export function UserCreateDialog({
             >
               Batal
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" variant="primary" disabled={createMutation.isPending}>
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}

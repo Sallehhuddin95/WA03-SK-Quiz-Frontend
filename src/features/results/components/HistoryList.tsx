@@ -55,7 +55,7 @@ export function HistoryList() {
             Anda belum mempunyai sejarah kuiz.
           </p>
           <Link href="/murid">
-            <Button type="button">Mula Kuiz Pertama</Button>
+            <Button type="button" variant="primary">Mula Kuiz Pertama</Button>
           </Link>
         </div>
       ) : (

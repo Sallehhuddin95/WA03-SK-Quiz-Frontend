@@ -6,6 +6,7 @@ import { MultipleChoiceAnswer } from "./MultipleChoiceAnswer";
 import { FillBlankAnswer } from "./FillBlankAnswer";
 import { TrueFalseAnswer } from "./TrueFalseAnswer";
 import { MatchingAnswer } from "./MatchingAnswer";
+import { formatTypeLabel } from "@/utils/format";
 import type { QuizQuestion, AnswerData } from "../types";
 
 interface QuestionDisplayProps {
@@ -19,13 +20,6 @@ interface QuestionDisplayProps {
   isFirst: boolean;
   isLast: boolean;
 }
-
-const TYPE_LABELS: Record<string, string> = {
-  aneka_pilihan: "Aneka Pilihan",
-  isi_tempat_kosong: "Isi Tempat Kosong",
-  betul_salah: "Betul / Salah",
-  padanan: "Padanan",
-};
 
 export function QuestionDisplay({
   question,
@@ -85,7 +79,7 @@ export function QuestionDisplay({
             Soalan {index + 1} dari {total}
           </span>
           <span className="text-sm text-muted-foreground">
-            {TYPE_LABELS[question.jenis_soalan] ?? question.jenis_soalan}
+            {formatTypeLabel(question.jenis_soalan)}
           </span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
@@ -110,7 +104,7 @@ export function QuestionDisplay({
           <ChevronLeft className="mr-1 h-4 w-4" />
           Sebelumnya
         </Button>
-        <Button type="button" onClick={onNext} disabled={isLast}>
+        <Button type="button" variant="primary" onClick={onNext} disabled={isLast}>
           Seterusnya
           <ChevronRight className="ml-1 h-4 w-4" />
         </Button>

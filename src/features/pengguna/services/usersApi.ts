@@ -39,3 +39,9 @@ export async function resetUserPassword(
 export async function deactivateUser(id: number): Promise<void> {
   return apiDelete<void>(`/users/${id}`);
 }
+
+export async function bulkDeactivateUsers(
+  ids: number[]
+): Promise<{ mesej: string }> {
+  return apiPost<{ mesej: string }>("/users/bulk-deactivate", { ids });
+}

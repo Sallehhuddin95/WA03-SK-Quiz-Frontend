@@ -133,7 +133,11 @@ export function KelasFormDialog({
               render={({ field }) => (
                 <Select value={field.value || undefined} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih darjah" />
+                    <SelectValue placeholder="Pilih darjah">
+                      {(value: string | null) =>
+                        value ? `Darjah ${value}` : "Pilih darjah"
+                      }
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {DARJAH_OPTIONS.map((darjah) => (
@@ -165,7 +169,7 @@ export function KelasFormDialog({
             >
               Batal
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" variant="primary" disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Simpan
             </Button>
